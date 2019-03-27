@@ -31,7 +31,7 @@ export type Mutation = {
 };
 
 export type MutationRemoveBookArgs = {
-  id: Scalars["Int"];
+  id: Scalars["String"];
 };
 
 export type Query = {
@@ -39,11 +39,13 @@ export type Query = {
 };
 
 export type QueryBooksArgs = {
+  searchQuery?: Maybe<Scalars["String"]>;
   cursor?: Maybe<Scalars["String"]>;
   first: Scalars["Int"];
 };
 
 export type BooksQueryVariables = {
+  searchQuery?: Maybe<Scalars["String"]>;
   cursor?: Maybe<Scalars["String"]>;
   first: Scalars["Int"];
 };
@@ -60,7 +62,7 @@ export type BooksQuery = { __typename?: "Query" } & {
 };
 
 export type RemoveBookMutationVariables = {
-  id: Scalars["Int"];
+  id: Scalars["String"];
 };
 
 export type RemoveBookMutation = { __typename?: "Mutation" } & Pick<
@@ -72,8 +74,9 @@ import gql from "graphql-tag";
 import * as ReactApolloHooks from "react-apollo-hooks";
 
 export const BooksDocument = gql`
-  query Books($cursor: String, $first: Int!) {
-    books(cursor: $cursor, first: $first) {
+  query Books($searchQuery: String, $cursor: String, $first: Int!) {
+    books(searchQuery: $searchQuery, cursor: $cursor, first: $first)
+      @connection(key: "books") {
       books {
         id
         title
@@ -93,7 +96,7 @@ export function useBooksQuery(
   );
 }
 export const RemoveBookDocument = gql`
-  mutation RemoveBook($id: Int!) {
+  mutation RemoveBook($id: String!) {
     removeBook(id: $id)
   }
 `;

@@ -1,13 +1,29 @@
-import { CircularProgress, List, ListItem, Paper } from "@material-ui/core";
+import {
+  CircularProgress,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper
+} from "@material-ui/core";
+import InboxIcon from "@material-ui/icons/Close";
 import React from "react";
 import { Waypoint } from "react-waypoint";
-import { useBooksQuery } from "./generated/ApolloHooks";
+import {
+  BooksDocument,
+  BooksQuery,
+  useBooksQuery,
+  useRemoveBookMutation
+} from "./generated/ApolloHooks";
 
 const App = () => {
-  const { data, fetchMore, networkStatus, } = useBooksQuery({
+  const { data, fetchMore, networkStatus } = useBooksQuery({
     variables: { first: 50 },
     notifyOnNetworkStatusChange: true
   });
+
+  const removeBook = useRemoveBookMutation();
 
   if (!data || !data.books) {
     return <CircularProgress />;
@@ -24,7 +40,37 @@ const App = () => {
           <List>
             {data.books.books.map((x, i) => (
               <React.Fragment key={x.id}>
-                <ListItem>{x.title}</ListItem>
+                <ListItem>
+                  <ListItemText>{x.title}</ListItemText>
+                  <ListItemIcon>
+                    <IconButton
+                      onClick={() =>
+                        removeBook({
+                          variables: { id: x.id },
+                          update: store => {
+                            const data = store.readQuery<BooksQuery>({
+                              query: BooksDocument
+                            });
+                            store.writeQuery<BooksQuery>({
+                              query: BooksDocument,
+                              data: {
+                                books: {
+                                  __typename: "BooksResponse",
+                                  books: data!.books.books.filter(
+                                    y => y.id !== x.id
+                                  ),
+                                  hasNextPage: data!.books.hasNextPage
+                                }
+                              }
+                            });
+                          }
+                        })
+                      }
+                    >
+                      <InboxIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                </ListItem>
                 {data.books.hasNextPage && i === data.books.books.length - 10 && (
                   <Waypoint
                     onEnter={() =>

@@ -1,5 +1,6 @@
-query Books($cursor: String, $first: Int!) {
-  books(cursor: $cursor, first: $first) {
+query Books($searchQuery: String, $cursor: String, $first: Int!) {
+  books(searchQuery: $searchQuery, cursor: $cursor, first: $first)
+    @connection(key: "books") {
     books {
       id
       title
