@@ -4,7 +4,7 @@ import { Waypoint } from "react-waypoint";
 import { useBooksQuery } from "./generated/ApolloHooks";
 
 const App = () => {
-  const { data, fetchMore, networkStatus } = useBooksQuery({
+  const { data, fetchMore, networkStatus, } = useBooksQuery({
     variables: { first: 50 },
     notifyOnNetworkStatusChange: true
   });
@@ -25,7 +25,7 @@ const App = () => {
             {data.books.books.map((x, i) => (
               <React.Fragment key={x.id}>
                 <ListItem>{x.title}</ListItem>
-                {i === data.books.books.length - 10 && (
+                {data.books.hasNextPage && i === data.books.books.length - 10 && (
                   <Waypoint
                     onEnter={() =>
                       fetchMore({
