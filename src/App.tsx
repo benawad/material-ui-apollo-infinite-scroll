@@ -3,9 +3,11 @@ import React from "react";
 import { useBooksQuery } from "./generated/ApolloHooks";
 
 const App = () => {
-  const { data, loading } = useBooksQuery({ variables: { first: 50 } });
+  const { data } = useBooksQuery({
+    variables: { first: 50 }
+  });
 
-  if (!data || loading) {
+  if (!data || !data.books) {
     return <div>...loading</div>;
   }
 
