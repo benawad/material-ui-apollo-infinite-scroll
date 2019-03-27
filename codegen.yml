@@ -1,0 +1,13 @@
+overwrite: true
+schema: "https://hurricane-frigate.glitch.me"
+documents: "**/*.graphql"
+generates:
+  src/generated/ApolloHooks.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withComponent: false
+      withHOC: false
+      withHooks: true

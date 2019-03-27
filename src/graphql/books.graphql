@@ -1,0 +1,10 @@
+query Books($cursor: String, $first: Int!) {
+  books(cursor: $cursor, first: $first) {
+    books {
+      id
+      title
+      author
+    }
+    hasNextPage
+  }
+}

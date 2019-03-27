@@ -1,28 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { List, ListItem, Paper } from "@material-ui/core";
+import React from "react";
+import { useBooksQuery } from "./generated/ApolloHooks";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+const App = () => {
+  const { data, loading } = useBooksQuery({ variables: { first: 50 } });
+
+  if (!data || loading) {
+    return <div>...loading</div>;
   }
-}
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#fafafa"
+      }}
+    >
+      <div style={{ maxWidth: 400, margin: "auto", padding: 10 }}>
+        <Paper>
+          <List>
+            {data.books.books.map(x => (
+              <ListItem key={x.id}>{x.title}</ListItem>
+            ))}
+          </List>
+        </Paper>
+      </div>
+    </div>
+  );
+};
 
 export default App;
