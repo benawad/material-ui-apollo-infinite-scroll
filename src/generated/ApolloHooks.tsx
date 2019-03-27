@@ -26,6 +26,14 @@ export enum CacheControlScope {
   Private = "PRIVATE"
 }
 
+export type Mutation = {
+  removeBook: Scalars["Boolean"];
+};
+
+export type MutationRemoveBookArgs = {
+  id: Scalars["Int"];
+};
+
 export type Query = {
   books: BooksResponse;
 };
@@ -51,6 +59,15 @@ export type BooksQuery = { __typename?: "Query" } & {
     };
 };
 
+export type RemoveBookMutationVariables = {
+  id: Scalars["Int"];
+};
+
+export type RemoveBookMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "removeBook"
+>;
+
 import gql from "graphql-tag";
 import * as ReactApolloHooks from "react-apollo-hooks";
 
@@ -74,4 +91,21 @@ export function useBooksQuery(
     BooksDocument,
     baseOptions
   );
+}
+export const RemoveBookDocument = gql`
+  mutation RemoveBook($id: Int!) {
+    removeBook(id: $id)
+  }
+`;
+
+export function useRemoveBookMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    RemoveBookMutation,
+    RemoveBookMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    RemoveBookMutation,
+    RemoveBookMutationVariables
+  >(RemoveBookDocument, baseOptions);
 }
