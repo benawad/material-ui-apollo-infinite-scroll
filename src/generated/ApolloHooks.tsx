@@ -76,7 +76,7 @@ import * as ReactApolloHooks from "react-apollo-hooks";
 export const BooksDocument = gql`
   query Books($searchQuery: String, $cursor: String, $first: Int!) {
     books(searchQuery: $searchQuery, cursor: $cursor, first: $first)
-      @connection(key: "books") {
+      @connection(key: "books", filter: ["searchQuery"]) {
       books {
         id
         title

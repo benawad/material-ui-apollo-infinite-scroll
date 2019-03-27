@@ -8,7 +8,7 @@ import {
   Paper
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/Close";
-import React from "react";
+import React, { useState } from "react";
 import { Waypoint } from "react-waypoint";
 import {
   BooksDocument,
@@ -18,8 +18,9 @@ import {
 } from "./generated/ApolloHooks";
 
 const App = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const { data, fetchMore, networkStatus } = useBooksQuery({
-    variables: { first: 50 },
+    variables: { searchQuery, first: 50 },
     notifyOnNetworkStatusChange: true
   });
 
@@ -36,6 +37,10 @@ const App = () => {
       }}
     >
       <div style={{ maxWidth: 400, margin: "auto", padding: 10 }}>
+        <input
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
         <Paper>
           <List>
             {data.books.books.map((x, i) => (
@@ -49,10 +54,12 @@ const App = () => {
                           variables: { id: x.id },
                           update: store => {
                             const data = store.readQuery<BooksQuery>({
-                              query: BooksDocument
+                              query: BooksDocument,
+                              variables: { searchQuery }
                             });
                             store.writeQuery<BooksQuery>({
                               query: BooksDocument,
+                              variables: { searchQuery },
                               data: {
                                 books: {
                                   __typename: "BooksResponse",
